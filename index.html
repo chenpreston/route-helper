@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ROUTE Helper</title>
+  <link rel="stylesheet" href="./leaflet.css" />
+  <style>
+    body {
+      margin: 0;
+      padding: 10px;
+      font-family: Arial, sans-serif;
+    }
+    #route-select {
+      width: 100%;
+      padding: 8px;
+      font-size: 16px;
+      margin-bottom: 8px;
+      box-sizing: border-box;
+    }
+    #map {
+      height: calc(95vh - 60px);
+      width: 100%;
+    }
+    @media (max-width: 600px) {
+      body { padding: 5px; }
+      #route-select { font-size: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <select id="route-select">
+    <option value="">Choose route</option>
+  </select>
+  <div id="map"></div>
+  <script src="leaflet.js"></script>
+  <script>
+    var map = L.map('map', {
+      zoomControl: true,
+      attributionControl: true
+    }).setView([-37.683333, 176.166667], 13);
+
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | <a href="https://www.baybus.co.nz/help-and-contact/general-transit-feed-specification/">GTFS from Baybus.</a> CC BY 4.0'
+    }).addTo(map);
+
+    var routeLayer;
+    var stopsLayer;
+    var allStops;
+    var allRoutes;
+
+    // 自定义站点图标
+    const stopIcon = L.icon({
+      iconUrl: './images/busstop.svg', // 示例图标（公交站图标）
+      iconSize: [25, 25], // 图标大小
+      iconAnchor: [12.5, 25], // 图标锚点（底部中心）
+      popupAnchor: [0, -25]   // 弹出窗口相对锚点的偏移
+    });
+
+    fetch('tauranga.geojson')
+      .then(response => {
+        if (!response.ok) throw new Error('路线文件加载失败');
+        return response.json();
+      })
+      .then(data => {
+        allRoutes = data.features;
+        console.log('路线数据:', allRoutes);
+        var select = document.getElementById('route-select');
+
+        allRoutes.forEach(feature => {
+          var option = document.createElement('option');
+          option.value = feature.properties.shape_id;
+          option.text = feature.properties.route_short_name + " " + feature.properties.route_long_name || feature.properties.route_id;
+          select.appendChild(option);
+        });
+
+        return fetch('stops.geojson')
+          .then(response => {
+            if (!response.ok) throw new Error('站点文件加载失败');
+            return response.json();
+          })
+          .then(stopsData => {
+            allStops = stopsData.features;
+            console.log('站点数据:', allStops);
+
+            select.addEventListener('change', function () {
+              var selectedShapeId = this.value;
+              if (routeLayer) map.removeLayer(routeLayer);
+              if (stopsLayer) map.removeLayer(stopsLayer);
+
+              if (selectedShapeId) {
+                var selectedRoute = allRoutes.find(f => f.properties.shape_id === selectedShapeId);
+                console.log('所选路线 route_id:', selectedRoute.properties.route_id);
+
+                routeLayer = L.geoJSON(selectedRoute, {
+                  style: {
+                    color: selectedRoute.properties.route_color || '#0066e3',
+                    weight: 10,
+                    opacity: 0.8
+                  },
+                  onEachFeature: function (feature, layer) {
+                    layer.bindPopup(`Line: ${feature.properties.route_short_name || feature.properties.route_id}`);
+                  }
+                }).addTo(map);
+
+                stopsLayer = L.geoJSON(allStops, {
+                  filter: function(feature) {
+                    const stopRoutes = feature.properties.routes || [];
+                    const match = stopRoutes.some(route => route.route_id === selectedRoute.properties.route_id);
+                    console.log(`筛选站点: ${feature.properties.stop_name}, routes:`, stopRoutes, `匹配: ${match}`);
+                    return match;
+                  },
+                  pointToLayer: function(feature, latlng) {
+                    // 使用自定义图标
+                    return L.marker(latlng, { icon: stopIcon });
+                  },
+                  onEachFeature: function(feature, layer) {
+                    layer.bindPopup(`
+                      <b>Stop name:</b> ${feature.properties.stop_name || '未知'}<br>
+                      <b>Stop ID:</b> ${feature.properties.stop_id || '未知'}<br>
+                      <b>Lines:</b> ${feature.properties.routes.map(r => r.route_short_name).join(', ')}
+                    `);
+                  }
+                }).addTo(map);
+
+                if (stopsLayer.getLayers().length === 0) {
+                  console.warn('没有找到匹配的站点');
+                } else {
+                  console.log('已添加站点:', stopsLayer.getLayers());
+                }
+
+                const routeBounds = routeLayer.getBounds();
+                if (stopsLayer.getBounds().isValid()) {
+                  routeBounds.extend(stopsLayer.getBounds());
+                }
+                map.fitBounds(routeBounds);
+              }
+            });
+          });
+      })
+      .catch(error => console.error('加载失败:', error));
+  </script>
+</body>
+</html>
