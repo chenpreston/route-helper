@@ -7,31 +7,52 @@
   <link rel="stylesheet" href="./leaflet.css" />
   <style>
     body {
-      margin: 0;
-      padding: 10px;
-      font-family: Arial, sans-serif;
+      margin-top: auto;
+      margin-bottom: auto;
+      margin-left: 0;
+      margin-right: 0;
+      padding-top: auto;
+      padding-bottom: auto;
+      padding-left: 0;
+      padding-right: 0;
     }
-    #route-select {
+
+    #route-select-container {
+      display: flex;
+      gap: 5%;
+      
+    }
+
+    #route-select-urban, #route-select-school {
+      color: black;
       width: 100%;
       padding: 8px;
-      font-size: 16px;
-      margin-bottom: 8px;
+      font-size: 18px;
+      margin-bottom: 5px;
       box-sizing: border-box;
     }
+
     #map {
-      height: calc(95vh - 60px);
+      
+      height: calc(100vh - 130px);
       width: 100%;
     }
+   
     @media (max-width: 600px) {
       body { padding: 5px; }
-      #route-select { font-size: 18px; }
+      #route-select-container { font-size: 18px; }
     }
   </style>
 </head>
 <body>
-  <select id="route-select">
-    <option value="">Choose route</option>
+  <div id="route-select-container">
+  <select id="route-select-urban">
+    <option value="">Urban route</option>
   </select>
+  <select id="route-select-school">
+    <option value="">School route</option>
+  </select>
+  </div>
   <div id="map"></div>
   <script src="leaflet.js"></script>
   <script>
@@ -41,7 +62,7 @@
     }).setView([-37.683333, 176.166667], 13);
 
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | <a href="https://www.baybus.co.nz/help-and-contact/general-transit-feed-specification/">GTFS from Baybus.</a> CC BY 4.0'
+      attribution: '© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors | <a href="https://www.baybus.co.nz/help-and-contact/general-transit-feed-specification/" target="_blank" rel="noopener noreferrer">Baybus.</a> CC BY 4.0'
     }).addTo(map);
 
     var routeLayer;
@@ -58,21 +79,38 @@
     });
 
     fetch('tauranga.geojson')
-      .then(response => {
-        if (!response.ok) throw new Error('路线文件加载失败');
-        return response.json();
-      })
-      .then(data => {
-        allRoutes = data.features;
-        console.log('路线数据:', allRoutes);
-        var select = document.getElementById('route-select');
+  .then(response => {
+    if (!response.ok) throw new Error('路线文件加载失败');
+    return response.json();
+  })
+  .then(data => {
+    allRoutes = data.features;
+    console.log('路线数据:', allRoutes);
 
-        allRoutes.forEach(feature => {
-          var option = document.createElement('option');
-          option.value = feature.properties.shape_id;
-          option.text = feature.properties.route_short_name + " " + feature.properties.route_long_name || feature.properties.route_id;
-          select.appendChild(option);
-        });
+    // 获取两个下拉菜单元素
+    var selectUrban = document.getElementById('route-select-urban');
+    var selectSchool = document.getElementById('route-select-school');
+
+    // 填充 shape_id 以 "24" 开头的选项
+    allRoutes.forEach(feature => {
+      if (feature.properties.shape_id.startsWith('24')) {
+        var option = document.createElement('option');
+        option.value = feature.properties.shape_id;
+        option.text = feature.properties.route_short_name + " " + feature.properties.route_long_name + " " + "[" + feature.properties.shape_id + "]" || feature.properties.route_id;
+        selectUrban.appendChild(option);
+      }
+    });
+
+    // 填充 shape_id 以 "17" 开头的选项
+    allRoutes.forEach(feature => {
+      if (feature.properties.shape_id.startsWith('1')) {
+        var option = document.createElement('option');
+        option.value = feature.properties.shape_id;
+        option.text = feature.properties.route_short_name + " " + feature.properties.route_long_name + " " + "[" + feature.properties.shape_id + "]" || feature.properties.route_id;
+        selectSchool.appendChild(option);
+      }
+    });
+  
 
         return fetch('stops.geojson')
           .then(response => {
@@ -83,7 +121,7 @@
             allStops = stopsData.features;
             console.log('站点数据:', allStops);
 
-            select.addEventListener('change', function () {
+            function showSelectedRoute () {
               var selectedShapeId = this.value;
               if (routeLayer) map.removeLayer(routeLayer);
               if (stopsLayer) map.removeLayer(stopsLayer);
@@ -135,7 +173,9 @@
                 }
                 map.fitBounds(routeBounds);
               }
-            });
+            };
+            selectUrban.addEventListener("change", showSelectedRoute);
+            selectSchool.addEventListener("change", showSelectedRoute);
           });
       })
       .catch(error => console.error('加载失败:', error));
