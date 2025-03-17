@@ -36,11 +36,10 @@ var map = L.map('map', {
   });
   
   // 自定义播放头图标（圆点）
-  const playheadIcon = L.divIcon({
-    className: 'playhead',
-    html: '<div style="width: 10px; height: 10px; background: red; border-radius: 50%;"></div>',
-    iconSize: [10, 10],
-    iconAnchor: [5, 5]
+  const playheadIcon = L.icon({
+    iconUrl: './images/bus.svg',
+    iconSize: [25, 25],
+    iconAnchor: [12.5, 12.5]
   });
   
   fetch('tauranga.geojson')
