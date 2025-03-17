@@ -1,6 +1,6 @@
 <!-- @license
 ROUTE Helper
-v0.2.1
+v0.3.0
 https://github.com/chenpreston/route-helper
 License: MIT
 -->
@@ -10,191 +10,70 @@ License: MIT
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ROUTE Helper</title>
+  <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="./leaflet.css" />
-  <style>
-    body {
-      margin-top: auto;
-      margin-bottom: auto;
-      margin-left: 0;
-      margin-right: 0;
-      padding-top: auto;
-      padding-bottom: auto;
-      padding-left: 0;
-      padding-right: 0;
-    }
-
-    #route-select-container {
-      display: flex;
-      gap: 5%;
-      
-    }
-
-    #route-select-urban, #route-select-school {
-      color: black;
-      width: 100%;
-      padding: 8px;
-      font-size: 18px;
-      margin-bottom: 5px;
-      box-sizing: border-box;
-    }
-
-    #map {
-      
-      height: calc(100vh - 130px);
-      width: 100%;
-    }
-   
-    @media (max-width: 600px) {
-      body { padding: 5px; }
-      #route-select-container { font-size: 18px; }
-    }
-  </style>
+  <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
-  <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LCDE1JNW2B"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() {
-            dataLayer.push(arguments);
-        }
-        gtag("js", new Date());
-        gtag("config", "G-LCDE1JNW2B");
-    </script>
   <div id="route-select-container">
-  <select id="route-select-urban">
-    <option value="">Urban route</option>
-  </select>
-  <select id="route-select-school">
-    <option value="">School route</option>
-  </select>
+    <select id="route-select-urban">
+      <option value="">Urban route</option>
+    </select>
+    <select id="route-select-school">
+      <option value="">School route</option>
+    </select>
   </div>
-  <div id="map"></div>
-  <script src="leaflet.js"></script>
-  <script>
-    var map = L.map('map', {
-      zoomControl: true,
-      attributionControl: true
-    }).setView([-37.683333, 176.166667], 13);
-
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors | <a href="https://www.baybus.co.nz/help-and-contact/general-transit-feed-specification/" target="_blank" rel="noopener noreferrer">Baybus.</a> CC BY 4.0'
-    }).addTo(map);
-
-    var routeLayer;
-    var stopsLayer;
-    var allStops;
-    var allRoutes;
-
-    // 自定义站点图标
-    const stopIcon = L.icon({
-      iconUrl: './images/busstop.svg', // 示例图标（公交站图标）
-      iconSize: [25, 25], // 图标大小
-      iconAnchor: [12.5, 25], // 图标锚点（底部中心）
-      popupAnchor: [0, -25]   // 弹出窗口相对锚点的偏移
-    });
-
-    fetch('tauranga.geojson')
-  .then(response => {
-    if (!response.ok) throw new Error('路线文件加载失败');
-    return response.json();
-  })
-  .then(data => {
-    allRoutes = data.features;
-    console.log('路线数据:', allRoutes);
-
-    // 获取两个下拉菜单元素
-    var selectUrban = document.getElementById('route-select-urban');
-    var selectSchool = document.getElementById('route-select-school');
-
-    // 填充 shape_id 以 "24" 开头的选项
-    allRoutes.forEach(feature => {
-      if (feature.properties.shape_id.startsWith('24')) {
-        var option = document.createElement('option');
-        option.value = feature.properties.shape_id;
-        option.text = feature.properties.route_short_name + " " + feature.properties.route_long_name + " " + "[" + feature.properties.shape_id + "]" || feature.properties.route_id;
-        selectUrban.appendChild(option);
-      }
-    });
-
-    // 填充 shape_id 以 "17" 开头的选项
-    allRoutes.forEach(feature => {
-      if (feature.properties.shape_id.startsWith('1')) {
-        var option = document.createElement('option');
-        option.value = feature.properties.shape_id;
-        option.text = feature.properties.route_short_name + " " + feature.properties.route_long_name + " " + "[" + feature.properties.shape_id + "]" || feature.properties.route_id;
-        selectSchool.appendChild(option);
-      }
-    });
   
+  <div id="map"></div>
+  <div id="controls">
+    <button id="replay">|<</button>
+    <button id="backward"><<</button>
+    <button id="play">></button>
 
-        return fetch('stops.geojson')
-          .then(response => {
-            if (!response.ok) throw new Error('站点文件加载失败');
-            return response.json();
-          })
-          .then(stopsData => {
-            allStops = stopsData.features;
-            console.log('站点数据:', allStops);
+    <button id="pause">||</button>
+    <button id="forward">>></button>
+    
+    <button id="X">X1</button>
+    
+  </div>
+  <div id="progress-container">
+    <input type="range" id="progress" min="0" value="0" step="1">
+  </div>
+  <script>
+    // Service Worker 注册
+    if ("serviceWorker" in navigator) {
+        console.log("script.js: 注册 Service Worker 中...");
+        navigator.serviceWorker
+            .register("./service-worker.js")
+            .then((registration) => {
+                console.log("script.js: Service Worker 已注册:", registration);
+                registration.addEventListener("updatefound", () => {
+                    const newWorker = registration.installing;
+                    newWorker.addEventListener("statechange", () => {
+                        if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
+                            console.log("有新版本的 Service Worker 可用");
+                            if (confirm("A new version ROUTE Helper is available. Refresh to update?")) {
+                                newWorker.postMessage({ action: "skipWaiting" });
+                            }
+                        }
+                    });
+                });
+            })
+            .catch((err) => console.error("script.js: Service Worker registration failed:", err));
 
-            function showSelectedRoute () {
-              var selectedShapeId = this.value;
-              if (routeLayer) map.removeLayer(routeLayer);
-              if (stopsLayer) map.removeLayer(stopsLayer);
+        navigator.serviceWorker.addEventListener("controllerchange", () => {
+            console.log("正在载入新版本的 Service Worker");
+            window.location.reload();
+        });
 
-              if (selectedShapeId) {
-                var selectedRoute = allRoutes.find(f => f.properties.shape_id === selectedShapeId);
-                console.log('所选路线 route_id:', selectedRoute.properties.route_id);
-
-                routeLayer = L.geoJSON(selectedRoute, {
-                  style: {
-                    color: selectedRoute.properties.route_color || '#0066e3',
-                    weight: 10,
-                    opacity: 0.8
-                  },
-                  onEachFeature: function (feature, layer) {
-                    layer.bindPopup(`Line: ${feature.properties.route_short_name || feature.properties.route_id}`);
-                  }
-                }).addTo(map);
-
-                stopsLayer = L.geoJSON(allStops, {
-                  filter: function(feature) {
-                    const stopRoutes = feature.properties.routes || [];
-                    const match = stopRoutes.some(route => route.route_id === selectedRoute.properties.route_id);
-                    console.log(`筛选站点: ${feature.properties.stop_name}, routes:`, stopRoutes, `匹配: ${match}`);
-                    return match;
-                  },
-                  pointToLayer: function(feature, latlng) {
-                    // 使用自定义图标
-                    return L.marker(latlng, { icon: stopIcon });
-                  },
-                  onEachFeature: function(feature, layer) {
-                    layer.bindPopup(`
-                      <b>Stop name:</b> ${feature.properties.stop_name || '未知'}<br>
-                      <b>Stop ID:</b> ${feature.properties.stop_id || '未知'}<br>
-                      <b>Lines:</b> ${feature.properties.routes.map(r => r.route_short_name).join(', ')}
-                    `);
-                  }
-                }).addTo(map);
-
-                if (stopsLayer.getLayers().length === 0) {
-                  console.warn('没有找到匹配的站点');
-                } else {
-                  console.log('已添加站点:', stopsLayer.getLayers());
-                }
-
-                const routeBounds = routeLayer.getBounds();
-                if (stopsLayer.getBounds().isValid()) {
-                  routeBounds.extend(stopsLayer.getBounds());
-                }
-                map.fitBounds(routeBounds);
-              }
-            };
-            selectUrban.addEventListener("change", showSelectedRoute);
-            selectSchool.addEventListener("change", showSelectedRoute);
-          });
-      })
-      .catch(error => console.error('加载失败:', error));
-  </script>
+        navigator.serviceWorker.addEventListener("message", (event) => {
+            if (event.data && event.data.action === "skipWaiting") {
+                console.log("Skipping waiting via message");
+            }
+        });
+    }
+</script>
+  <script src="leaflet.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
