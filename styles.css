@@ -35,11 +35,11 @@ body {
   }
   
   #controls button {
-    padding: 10px 20px; /* 稍大一些的内边距 */
-    margin: 0 5px;
+    padding: 0; /* 稍大一些的内边距 */
+    margin: 0 1%;
     font-size: 16px;
     font-weight: 600; /* iOS 按钮文字稍粗 */
-    color: #007aff; /* iOS 蓝色 */
+    color: #000; /* iOS 蓝色 */
     background-color: #fff; /* 白色背景 */
     border: 1px solid #d1d1d6; /* iOS 边框色 */
     border-radius: 12px; /* 圆润边角 */

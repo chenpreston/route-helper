@@ -259,7 +259,7 @@ var map = L.map('map', {
   document.getElementById('X').addEventListener('click', () => {
     currentSpeedIndex = (currentSpeedIndex + 1) % speedLevels.length;
     playSpeed = speedLevels[currentSpeedIndex].delay;
-    document.getElementById('X').textContent = `X: ${speedLevels[currentSpeedIndex].label}`;
+    document.getElementById('X').textContent = `X ${speedLevels[currentSpeedIndex].label}`;
   });
   
   // 重放按钮
