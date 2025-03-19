@@ -1,79 +1,85 @@
 <!-- @license
 ROUTE Helper
-v0.3.0
 https://github.com/chenpreston/route-helper
 License: MIT
 -->
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ROUTE Helper</title>
-  <link rel="manifest" href="manifest.json" />
-  <link rel="stylesheet" href="./leaflet.css" />
-  <link rel="stylesheet" href="./styles.css" />
-</head>
-<body>
-  <div id="route-select-container">
-    <select id="route-select-urban">
-      <option value="">Urban route</option>
-    </select>
-    <select id="route-select-school">
-      <option value="">School route</option>
-    </select>
-  </div>
-  
-  <div id="map"></div>
-  <div id="controls">
-    <button id="replay">|<</button>
-    <button id="backward"><<</button>
-    <button id="play">></button>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ROUTE Helper</title>
+    <link rel="stylesheet" href="./leaflet.css" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div id="route-select-container">
+      <select id="route-select-urban">
+        <option value="">Urban route</option>
+      </select>
+      <select id="route-select-school">
+        <option value="">School route</option>
+      </select>
+    </div>
 
-    <button id="pause">||</button>
-    <button id="forward">>></button>
-    
-    <button id="X">X1</button>
-    
-  </div>
-  <div id="progress-container">
-    <input type="range" id="progress" min="0" value="0" step="1">
-  </div>
-  <script>
-    // Service Worker 注册
-    if ("serviceWorker" in navigator) {
-        console.log("script.js: 注册 Service Worker 中...");
+    <div id="map"></div>
+    <div id="controls">
+      <button id="replay">|<</button>
+      <button id="backward"><<</button>
+      <button id="play">></button>
+
+      <button id="pause">||</button>
+      <button id="forward">>></button>
+
+      <button id="X">X1</button>
+    </div>
+    <div id="progress-container">
+      <input type="range" id="progress" min="0" value="0" step="1" />
+    </div>
+    <script>
+      // Service Worker 注册
+      if ("serviceWorker" in navigator) {
+        console.log("route helper: 注册 Service Worker 中...");
         navigator.serviceWorker
-            .register("./service-worker.js")
-            .then((registration) => {
-                console.log("script.js: Service Worker 已注册:", registration);
-                registration.addEventListener("updatefound", () => {
-                    const newWorker = registration.installing;
-                    newWorker.addEventListener("statechange", () => {
-                        if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
-                            console.log("有新版本的 Service Worker 可用");
-                            if (confirm("A new version ROUTE Helper is available. Refresh to update?")) {
-                                newWorker.postMessage({ action: "skipWaiting" });
-                            }
-                        }
-                    });
-                });
-            })
-            .catch((err) => console.error("script.js: Service Worker registration failed:", err));
+          .register("./service-worker.js")
+          .then((registration) => {
+            console.log("route helper: Service Worker 已注册:", registration);
+            registration.addEventListener("updatefound", () => {
+              const newWorker = registration.installing;
+              newWorker.addEventListener("statechange", () => {
+                if (
+                  newWorker.state === "installed" &&
+                  navigator.serviceWorker.controller
+                ) {
+                  console.log("route helper: 有新版本的 Service Worker 可用");
+                  if (
+                    confirm(
+                      "A new version ROUTE Helper is available. Refresh to update?"
+                    )
+                  ) {
+                    newWorker.postMessage({ action: "skipWaiting" });
+                  }
+                }
+              });
+            });
+          })
+          .catch((err) =>
+            console.error("route helper: Service Worker registration failed:", err)
+          );
 
         navigator.serviceWorker.addEventListener("controllerchange", () => {
-            console.log("正在载入新版本的 Service Worker");
-            window.location.reload();
+          console.log("route helper: 正在载入新版本的 Service Worker");
+          window.location.reload();
         });
 
         navigator.serviceWorker.addEventListener("message", (event) => {
-            if (event.data && event.data.action === "skipWaiting") {
-                console.log("Skipping waiting via message");
-            }
+          if (event.data && event.data.action === "skipWaiting") {
+            console.log("route helper: Skipping waiting via message");
+          }
         });
-    }
-</script>
-  <script src="leaflet.js"></script>
-  <script src="script.js"></script>
-</body>
+      }
+    </script>
+    <script src="leaflet.js"></script>
+    <script src="script.js"></script>
+  </body>
 </html>
