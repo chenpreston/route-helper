@@ -1,4 +1,4 @@
-const CACHE_NAME = "route-helper-cache-v0.3.4"; // 更新缓存时修改版本号                                
+const CACHE_NAME = "route-helper-cache-v0.3.5"; // 更新缓存时修改版本号                                
 const urlsToCache = [
   "/",
   "./index.html",

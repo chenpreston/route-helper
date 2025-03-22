@@ -66,7 +66,7 @@ body {
     padding: 0; /* 稍大一些的内边距 */
     margin: 1px;
     font-size: 1em;
-    font-weight: 100; /* iOS 按钮文字稍粗 */
+    font-weight: 1000; /* iOS 按钮文字稍粗 */
     color: #ffffff; /* iOS 蓝色 */
     background-color: #a2a2a2; /* 灰色背景 */
     border: 1px solid #939393; /* iOS 边框色 */
