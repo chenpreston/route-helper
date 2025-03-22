@@ -13,25 +13,36 @@ License: MIT
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <div id="route-select-container">
-      <select id="route-select-urban">
-        <option value="">Urban route</option>
-      </select>
-      <select id="route-select-school">
-        <option value="">School route</option>
-      </select>
-    </div>
+    <div id="route-select">
+      <div class="route-select-container" id="urban-container">
+        <input type="number" id="route-input-urban" placeholder="Input urban route">
+        <ul id="route-list-urban" class="route-list"></ul>
+      </div>
+      <div class="route-select-container" id="school-container">
+        <input type="number" id="route-input-school" placeholder="Input school route">
+        <ul id="route-list-school" class="route-list"></ul>
+      </div>
+      </div> 
+    
 
     <div id="map"></div>
     <div id="controls">
-      <button id="replay">|<</button>
-      <button id="backward"><<</button>
-      <button id="play">></button>
-
-      <button id="pause">||</button>
-      <button id="forward">>></button>
-
-      <button id="X">X1</button>
+      <button id="replay">
+        <img class="play-btn" src="./images/backward-step-solid.svg" width="8" />
+      </button>
+      <button id="backward">
+        <img class="play-btn" src="./images/backward-solid.svg" width="10" />
+      </button>
+      <button id="play">
+        <img class="play-btn" src="./images/play-solid.svg" width="8" />
+      </button>
+      <button id="pause">
+        <img class="play-btn" src="./images/pause-solid.svg" width="8" />
+      </button>
+      <button id="forward">
+        <img class="play-btn" src="./images/forward-solid.svg" width="10" />
+      </button>
+      <button id="X">1</button>
     </div>
     <div id="progress-container">
       <input type="range" id="progress" min="0" value="0" step="1" />
@@ -64,7 +75,10 @@ License: MIT
             });
           })
           .catch((err) =>
-            console.error("route helper: Service Worker registration failed:", err)
+            console.error(
+              "route helper: Service Worker registration failed:",
+              err
+            )
           );
 
         navigator.serviceWorker.addEventListener("controllerchange", () => {
