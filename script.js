@@ -49,7 +49,7 @@ var map = L.map('map', {
     })
     .then(data => {
       allRoutes = data.features;
-      console.log('路线数据:', allRoutes);
+     
   
       var urbanList = document.getElementById('route-list-urban');
         var schoolList = document.getElementById('route-list-school');
@@ -81,7 +81,7 @@ var map = L.map('map', {
       })
       .then(stopsData => {
         allStops = stopsData.features;
-        console.log('站点数据:', allStops);
+        
 
         const urbanInput = document.getElementById('route-input-urban');
         const urbanList = document.getElementById('route-list-urban');
@@ -150,7 +150,7 @@ var map = L.map('map', {
               console.error('未找到匹配的路线:', selectedShapeId);
               return;
             }
-            console.log('所选路线 route_id:', selectedRoute.properties.route_id);
+            
 
             routeLayer = L.geoJSON(selectedRoute, {
               style: {

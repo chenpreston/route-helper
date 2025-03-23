@@ -50,11 +50,11 @@ License: MIT
     <script>
       // Service Worker 注册
       if ("serviceWorker" in navigator) {
-        console.log("route helper: 注册 Service Worker 中...");
+       
         navigator.serviceWorker
           .register("./service-worker.js")
           .then((registration) => {
-            console.log("route helper: Service Worker 已注册:", registration);
+           
             registration.addEventListener("updatefound", () => {
               const newWorker = registration.installing;
               newWorker.addEventListener("statechange", () => {
@@ -62,7 +62,7 @@ License: MIT
                   newWorker.state === "installed" &&
                   navigator.serviceWorker.controller
                 ) {
-                  console.log("route helper: 有新版本的 Service Worker 可用");
+                 
                   if (
                     confirm(
                       "A new version ROUTE Helper is available. Refresh to update?"
@@ -82,13 +82,13 @@ License: MIT
           );
 
         navigator.serviceWorker.addEventListener("controllerchange", () => {
-          console.log("route helper: 正在载入新版本的 Service Worker");
+          
           window.location.reload();
         });
 
         navigator.serviceWorker.addEventListener("message", (event) => {
           if (event.data && event.data.action === "skipWaiting") {
-            console.log("route helper: Skipping waiting via message");
+           
           }
         });
       }
