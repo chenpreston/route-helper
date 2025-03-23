@@ -1,4 +1,4 @@
-const CACHE_NAME = "route-helper-cache-v0.3.6"; // 更新缓存时修改版本号
+const CACHE_NAME = "route-helper-cache-v0.3.7"; // 更新缓存时修改版本号
 const CACHE_PREFIX = CACHE_NAME.split("-v")[0]; // 提取前缀                             
 const urlsToCache = [
   "/",
@@ -16,6 +16,10 @@ const urlsToCache = [
   "./images/marker-icon-2x.png",
   "./images/marker-icon.png",
   "./images/marker-shadow.png",
+  "./images/1.svg",
+  "./images/2.svg",
+  "./images/3.svg",
+  "./images/x.svg",
 ];
 
 // 安装事件

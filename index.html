@@ -28,21 +28,24 @@ License: MIT
     <div id="map"></div>
     <div id="controls">
       <button id="replay">
-        <img class="play-btn" src="./images/backward-step-solid.svg" width="8" />
+        <img class="play-btn" src="./images/backward-step-solid.svg" width="20" />
       </button>
       <button id="backward">
-        <img class="play-btn" src="./images/backward-solid.svg" width="10" />
+        <img class="play-btn" src="./images/backward-solid.svg" width="30" />
       </button>
       <button id="play">
-        <img class="play-btn" src="./images/play-solid.svg" width="8" />
+        <img class="play-btn" src="./images/play-solid.svg" width="20" />
       </button>
       <button id="pause">
-        <img class="play-btn" src="./images/pause-solid.svg" width="8" />
+        <img class="play-btn" src="./images/pause-solid.svg" width="20" />
       </button>
       <button id="forward">
-        <img class="play-btn" src="./images/forward-solid.svg" width="10" />
+        <img class="play-btn" src="./images/forward-solid.svg" width="30" />
       </button>
-      <button id="X">1</button>
+      <img id="x-svg" class="play-btn" src="./images/x.svg" width="16" />
+      <button id="X">
+        <img class="play-btn" src="./images/1.svg" width="16" />
+      </button>
     </div>
     <div id="progress-container">
       <input type="range" id="progress" min="0" value="0" step="1" />
@@ -92,6 +95,22 @@ License: MIT
           }
         });
       }
+
+      // 设置默认播放速度延迟
+      const defaultDelay = 200;
+
+      // 播放速度切换逻辑
+      const speedButton = document.getElementById('X');
+      let speedState = 1;
+      const speedIcons = ['./images/1.svg', './images/2.svg', './images/3.svg'];
+
+      speedButton.addEventListener('click', () => {
+        speedState = (speedState % 3) + 1;
+        speedButton.querySelector('img').src = speedIcons[speedState - 1];
+        // 根据 speedState 设置播放速度
+        // 例如：播放速度 = defaultDelay / speedState;
+      });
+
     </script>
     <script src="leaflet.js"></script>
     <script src="script.js"></script>

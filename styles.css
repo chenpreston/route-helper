@@ -55,37 +55,52 @@ body {
     width: 100%;
   }
   
-  #controls {
-    padding: 10px;
-    text-align: center;
-    background-color: #f2f2f7; /* iOS 浅灰背景 */
-  }
+
+
+
   
-  #controls button {
-    width: 50px;
-    padding: 0; /* 稍大一些的内边距 */
-    margin: 1px;
-    font-size: 1em;
-    font-weight: 1000; /* iOS 按钮文字稍粗 */
-    color: #ffffff; /* iOS 蓝色 */
-    background-color: #a2a2a2; /* 灰色背景 */
-    border: 1px solid #939393; /* iOS 边框色 */
-    border-radius: 8px; /* 圆润边角 */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 轻微阴影 */
-    transition: all 0.2s ease; /* 平滑过渡效果 */
-    cursor: pointer;
-  }
-  
-  #controls button:hover {
-    background-color: #5e5e5e; /* 悬停时略灰 */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* 阴影增强 */
-  }
-  
-  #controls button:active {
-    background-color: #9a9a9a; /* 点击时更深的灰色 */
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* 阴影减弱 */
-    transform: translateY(1px); /* 轻微下沉效果 */
-  }
+
+
+
+      #controls {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+       
+        
+      }
+
+      #controls button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: transparent; 
+        border: 0;
+        
+        padding: 0;
+        margin: 0 0px;
+        
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      #controls button img[src$="1.svg"] {
+        width: 16px;
+      }
+
+      #controls button img[src$="2.svg"],
+      #controls button img[src$="3.svg"] {
+        width: 20px;
+      }
+
+      .play-btn {
+        display: block;
+      }
+ 
+      #x-svg {
+        margin-left: 2em;
+      }
+
   
   
   #progress-container {

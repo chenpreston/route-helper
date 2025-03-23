@@ -20,9 +20,9 @@ var map = L.map('map', {
   
   // 播放速度控制
   const speedLevels = [
-    { label: '0.5', delay: 200 },
-    { label: '1', delay: 100 },
-    { label: '2', delay: 50 }
+    { label: '1', delay: 200 },
+    { label: '2', delay: 100 },
+    { label: '3', delay: 50 }
   ];
   var currentSpeedIndex = 1; // 默认正常速度
   var playSpeed = speedLevels[currentSpeedIndex].delay;
@@ -298,7 +298,7 @@ document.getElementById('progress').addEventListener('input', (e) => {
 document.getElementById('X').addEventListener('click', () => {
   currentSpeedIndex = (currentSpeedIndex + 1) % speedLevels.length;
   playSpeed = speedLevels[currentSpeedIndex].delay;
-  document.getElementById('X').textContent = `${speedLevels[currentSpeedIndex].label}`;
+  document.getElementById('X').querySelector('img').src = `./images/${speedLevels[currentSpeedIndex].label}.svg`;
 });
 
 document.getElementById('replay').addEventListener('click', () => {
