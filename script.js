@@ -1,7 +1,7 @@
 var map = L.map('map', {
     zoomControl: true,
     attributionControl: true
-  }).setView([-37.683333, 176.166667], 13);
+  }).setView([-37.683333, 176.166667], 12);
   
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors | <a href="https://www.baybus.co.nz/help-and-contact/general-transit-feed-specification/" target="_blank" rel="noopener noreferrer">Baybus.</a> CC BY 4.0'

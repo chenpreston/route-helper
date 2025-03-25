@@ -6,6 +6,8 @@ body {
 
   #route-select {
     margin-top: 0.3em;
+    margin-left: 0.3em;
+    margin-right: 0.3em;
     justify-content: center;
     display: flex;
     gap: 10%;
@@ -92,12 +94,12 @@ body {
       }
 
       #controls button img[src$="1.svg"] {
-        width: 1em;
+        width: 1.3em;
       }
 
       #controls button img[src$="2.svg"],
       #controls button img[src$="3.svg"] {
-        width: 1em;
+        width: 1.5em;
       }
 
       .play-btn {
@@ -106,6 +108,7 @@ body {
  
       #x-svg {
         margin-left: 2em;
+        width: 1.5em;
       }
 
   
