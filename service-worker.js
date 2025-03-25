@@ -1,4 +1,4 @@
-const CACHE_NAME = "route-helper-cache-v0.3.8"; // 更新缓存时修改版本号
+const CACHE_NAME = "route-helper-cache-v0.3.9"; // 更新缓存时修改版本号
 const CACHE_PREFIX = CACHE_NAME.split("-v")[0]; // 提取前缀                             
 const urlsToCache = [
   "/",

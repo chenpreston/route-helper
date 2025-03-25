@@ -5,6 +5,7 @@ body {
   }
 
   #route-select {
+    margin-top: 0.3em;
     justify-content: center;
     display: flex;
     gap: 10%;
@@ -13,11 +14,11 @@ body {
   #route-input-urban, #route-input-school {
     color: black;
     width: 100%;
-    padding: 8px;
-    font-size: 18px;
+    padding: 0.4em;
+    font-size: 1em;
     box-sizing: border-box;
-    border-radius: 8px; /* 圆角 */
-    border: 1px solid #d1d1d6; /* iOS 边框色 */
+    border-radius: 0.5em; /* 圆角 */
+    border: 0.1em solid #d1d1d6; /* iOS 边框色 */
     background-color: #fff;
     appearance: none; /* 移除默认样式 */
   }
@@ -25,16 +26,17 @@ body {
   .route-select-container {
     position: relative;
     
-    margin-bottom: 5px;
+    margin-bottom: 0.3em;
   }
   .route-list {
     position: absolute;
     top: 100%;
     left: 0;
     width: 100%;
-    border: 1px solid #ccc;
-    max-height: calc(100vh - 250px);
+    border: 0.1em solid #ccc;
+    max-height: 85vh;
     overflow-y: auto;
+    overflow-x: hidden;
     background: white;
     display: none;
     list-style: none;
@@ -43,7 +45,7 @@ body {
     z-index: 2000;
   }
   .route-list li {
-    padding: 5px;
+    padding: 0.3em;
     cursor: pointer;
   }
   .route-list li:hover {
@@ -51,13 +53,17 @@ body {
   }
   
   #map {
-    height: calc(100vh - 250px);
+    height: 72vh;
     width: 100%;
   }
   
 
-
-
+  img {
+  width: 2em  
+  }
+  #backward-svg, #forward-svg {
+  width: 3em ;
+}
   
 
 
@@ -71,26 +77,27 @@ body {
       }
 
       #controls button {
+        
         display: flex;
         align-items: center;
         justify-content: center;
         background-color: transparent; 
         border: 0;
         
-        padding: 8px 16px;
-        margin: 0 0px;
+        padding: 1em 1em;
+        margin: 0;
         
         cursor: pointer;
         transition: background-color 0.3s;
       }
 
       #controls button img[src$="1.svg"] {
-        width: 16px;
+        width: 1em;
       }
 
       #controls button img[src$="2.svg"],
       #controls button img[src$="3.svg"] {
-        width: 20px;
+        width: 1em;
       }
 
       .play-btn {
@@ -104,44 +111,111 @@ body {
   
   
   #progress-container {
-    padding: 10px;
+    padding: 0.5em 0;
+    margin-top: 0.2em;
     text-align: center;
-    background-color: #f2f2f7; /* iOS 浅灰背景 */
+    background-color: #ffffff; /* iOS 浅灰背景 */
   }
   
   #progress {
     width: 80%;
-    max-width: 600px;
-    height: 10px; /* 更细的进度条 */
-    border-radius: 4px; /* 圆角 */
+    max-width: 80vw;
+    height: 0.8em; /* 更细的进度条 */
+    border-radius: 0.5em; /* 圆角 */
     background-color: #d1d1d6; /* iOS 灰色底 */
     appearance: none; /* 移除默认样式 */
   }
   
   #progress::-webkit-slider-thumb {
     appearance: none;
-    width: 32px;
-    height: 32px;
-    background:url(./images/bus.svg);
+    width: 3em;
+    height: 3em;
+    background:url(./images/bus.svg) no-repeat;
     border-radius: 50%;
     box-shadow: none;
     cursor: pointer;
   }
   
   #progress::-moz-range-thumb {
-    width: 32px;
-    height: 32px;
-    background:url(./images/bus.svg);
+    width: 3em;
+    height: 3em;
+    background:url(./images/bus.svg) no-repeat;
     border-radius: 50%;
     box-shadow: none;
     cursor: pointer;
   }
   
-  @media (max-width: 600px) {
-    body { padding: 5px; }
-    #route-select-container { font-size: 18px; }
+  @media (max-height: 667px) {
+    #map {
+      height: 65vh;
+    }
+    .route-list {
+      max-height: 80vh;
+    }
     #controls button {
-      padding: 8px 14px; /* 小屏幕上按钮稍小 */
-      font-size: 14px;
+      padding: 0.5em 0.5em;
     }
   }
+
+  @media (min-height: 2000px){
+    html {
+      font-size: 38px;
+    }
+    img {
+      width: 3em;
+    }
+    #backward-svg, #forward-svg {
+      width: 4em ;
+  }
+  #x-svg {
+    width: 1em;
+  }
+  #controls button img[src$="1.svg"] {
+    width: 2em;
+  }
+
+  #controls button img[src$="2.svg"],
+  #controls button img[src$="3.svg"] {
+    width: 2em;
+  }
+  #controls button {
+    margin-top: 1em;
+    padding: 2em 2em;
+  }
+  #progress-container {
+    padding: 1em 0;
+    margin-top: 0.2em;
+    text-align: center;
+    background-color: #ffffff; /* iOS 浅灰背景 */
+  }
+  
+  #progress {
+    width: 80%;
+    max-width: 80vw;
+    height: 2em; /* 更细的进度条 */
+    border-radius: 1em; /* 圆角 */
+    background-color: #d1d1d6; /* iOS 灰色底 */
+    appearance: none; /* 移除默认样式 */
+  }
+  
+  #progress::-webkit-slider-thumb {
+    appearance: none;
+    width: 7em;
+    height: 7em;
+    background:url(./images/bus.svg) no-repeat;
+    border-radius: 50%;
+    box-shadow: none;
+    cursor: pointer;
+  }
+  
+  #progress::-moz-range-thumb {
+    width: 7em;
+    height: 7em;
+    background:url(./images/bus.svg) no-repeat;
+    border-radius: 50%;
+    box-shadow: none;
+    cursor: pointer;
+  }
+
+
+}
