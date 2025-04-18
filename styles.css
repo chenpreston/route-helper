@@ -11,6 +11,7 @@ body {
     justify-content: center;
     display: flex;
     gap: 10%;
+    height: 4.5vh;
   }
 
   #route-input-urban, #route-input-school {
@@ -55,7 +56,7 @@ body {
   }
   
   #map {
-    height: 72vh;
+    height: 70vh;
     width: 100%;
   }
   
@@ -74,7 +75,7 @@ body {
         display: flex;
         justify-content: center;
         align-items: center;
-       
+       height: 8vh;
         
       }
 
@@ -118,6 +119,7 @@ body {
     margin-top: 0.2em;
     text-align: center;
     background-color: #ffffff; /* iOS 浅灰背景 */
+    height: 5vh;
   }
   
   #progress {
