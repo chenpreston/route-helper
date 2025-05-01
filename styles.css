@@ -10,13 +10,12 @@ body {
     margin-right: 0.3em;
     justify-content: center;
     display: flex;
-    gap: 10%;
     height: 4.5vh;
   }
 
-  #route-input-urban, #route-input-school {
+  #route-input-urban {
     color: black;
-    width: 100%;
+    width: 70vw;
     padding: 0.4em;
     font-size: 1em;
     box-sizing: border-box;
@@ -62,7 +61,7 @@ body {
   
 
   img {
-  width: 2em  
+  width: 2em;
   }
   #backward-svg, #forward-svg {
   width: 3em ;
@@ -223,4 +222,15 @@ body {
   }
 
 
+}
+
+#urban-container {
+  display: flex;
+}
+#clear-route-input-urban {
+  margin-left: 0.5em;
+  background-color: transparent;
+  border:#ccc 0.1em solid;
+  border-radius: 0.8em;
+  cursor: pointer;
 }

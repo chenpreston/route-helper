@@ -52,27 +52,27 @@ var map = L.map('map', {
      
   
       var urbanList = document.getElementById('route-list-urban');
-        var schoolList = document.getElementById('route-list-school');
+        //var schoolList = document.getElementById('route-list-school');
   
       // 填充城市公交列表
       allRoutes.forEach(feature => {
-        if (feature.properties.shape_id.startsWith('24')) {
+        
           var li = document.createElement('li');
           li.textContent = `${feature.properties.route_short_name} ${feature.properties.route_long_name} [${feature.properties.shape_id}]`;
           li.dataset.shapeId = feature.properties.shape_id;
           urbanList.appendChild(li);
-        }
+        
       });
 
       // 填充学校公交列表
-      allRoutes.forEach(feature => {
+      /* allRoutes.forEach(feature => {
         if (feature.properties.shape_id.startsWith('1')) {
           var li = document.createElement('li');
           li.textContent = `${feature.properties.route_short_name} ${feature.properties.route_long_name} [${feature.properties.shape_id}]`;
           li.dataset.shapeId = feature.properties.shape_id;
           schoolList.appendChild(li);
         }
-      });
+      }); */
   
       return fetch('stops.geojson')
       .then(response => {
@@ -81,12 +81,35 @@ var map = L.map('map', {
       })
       .then(stopsData => {
         allStops = stopsData.features;
-        
+
+        // 创建一个图层用于显示所有站点
+        const allStopsLayer = L.geoJSON(allStops, {
+          pointToLayer: function(feature, latlng) {
+            return L.marker(latlng, { icon: stopIcon });
+          },
+          onEachFeature: function(feature, layer) {
+            layer.bindPopup(`
+              <b>Stop name:</b> ${feature.properties.stop_name || '未知'}<br>
+                  <b>Stop ID:</b> ${feature.properties.stop_id || '未知'}<br>
+                  <b>Lines:</b> ${feature.properties.routes.map(r => r.route_short_name).join(', ')}
+            `);
+          }
+        });
+
+        // 添加图层控制器
+        const baseLayers = {};
+        const overlays = {
+          "All Stops": allStopsLayer
+        };
+        L.control.layers(baseLayers, overlays).addTo(map);
+
+        // 默认将所有站点图层添加到地图
+        //allStopsLayer.addTo(map);
 
         const urbanInput = document.getElementById('route-input-urban');
         const urbanList = document.getElementById('route-list-urban');
-        const schoolInput = document.getElementById('route-input-school');
-        const schoolList = document.getElementById('route-list-school');
+        //const schoolInput = document.getElementById('route-input-school');
+        //const schoolList = document.getElementById('route-list-school');
 
         urbanInput.addEventListener('focus', () => {
           urbanList.style.display = 'block';
@@ -95,7 +118,7 @@ var map = L.map('map', {
         urbanInput.addEventListener('input', () => filterOptions(urbanInput, urbanList));
         urbanList.addEventListener('click', (e) => selectOption(e, urbanInput, urbanList));
 
-        schoolInput.addEventListener('focus', () => {
+        /* schoolInput.addEventListener('focus', () => {
           schoolList.style.display = 'block';
           filterOptions(schoolInput, schoolList);
         });
@@ -109,7 +132,7 @@ var map = L.map('map', {
           if (!schoolInput.contains(e.target) && !schoolList.contains(e.target)) {
             schoolList.style.display = 'none';
           }
-        });
+        }); */
 
         function filterOptions(input, list) {
           const searchText = input.value.toLowerCase();
